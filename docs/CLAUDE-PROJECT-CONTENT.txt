@@ -1,0 +1,171 @@
+================================================================================
+COPIE TUDO ABAIXO E COLE NO SEU PROJETO NO CLAUDE.AI
+================================================================================
+
+NOME DO PROJETO: ADR Kube-News - Knowledge Base
+
+DESCRIÇÃO:
+Template e base de conhecimento para Architecture Decision Records (ADR).
+Use este projeto para documentar decisões arquiteturais importantes no Kube-News
+e manter histórico de decisões para referência futura.
+
+================================================================================
+CONTEÚDO PRINCIPAL
+================================================================================
+
+## 📋 ADR/RFD Template - Architecture Decision Records
+
+**ADR = Architecture Decision Record**
+**RFD = Request for Discussion**
+
+Este é um template estruturado para documentar decisões arquiteturais importantes.
+
+### 🔴 1. PROBLEMA - O que está quebrado?
+
+**O que entra**:
+- Sintoma observável: O que você vê que está errado?
+- Impacto mensurável: Qual é o tamanho do problema?
+- Escopo: Afeta qual parte do sistema?
+
+**Protege contra**: Qual é a afirmação que você quer garantir?
+
+**Exemplo Kube-News**:
+```
+Sintoma: Pod único não absorve pico de tráfego
+Impacto: 30% das requisições recebem timeout
+Escopo: App kube-news, não afeta postgres
+```
+
+---
+
+### 🟢 2. SOLUÇÃO PROPOSTA - O que vamos fazer?
+
+**O que entra**:
+- Abordagem técnica em alto nível
+- Mudanças concretas (deltas)
+- Mapa de impacto
+
+**Protege contra**: Solução sem desenho = improviso
+
+**Exemplo Kube-News**:
+```
+Abordagem: Adicionar HPA baseado em CPU
+Deltas:
+  - Criar k8s-bo/hpa.yml
+  - Atualizar deployment com resource requests
+  - Configurar monitoring para CPU target (70%)
+```
+
+---
+
+### 🟠 3. ALTERNATIVAS - O que foi considerado?
+
+**O que entra**:
+- 2-3 alternativas viáveis
+- Por que cada uma foi descartada
+
+**Exemplo Kube-News**:
+```
+1. KEDA (descartado: complexidade desnecessária)
+2. Aumentar tamanho do pod (descartado: não resolve)
+```
+
+---
+
+### 🟣 4. RISCOS - O que pode dar errado?
+
+**O que entra**:
+- Riscos técnicos
+- Mitigações
+- Sinais de alerta pós-deploy
+
+**Exemplo Kube-News**:
+```
+Risco: HPA agressivo causa thrashing
+Mitigação: stabilizationWindowSeconds=300
+
+Sinal de alerta: Se CPU subir acima de 80%
+```
+
+---
+
+## 📁 Estrutura para Organizar
+
+```
+docs/adr/
+├── adr-001-initial-k8s-setup.md
+├── adr-002-add-monitoring-stack.md
+└── adr-NNN-titulo.md
+```
+
+---
+
+## ✨ Exemplo Real: ADR-002 Kube-News
+
+**Título**: Adicionar HPA para Scaling Automático
+
+**Status**: Proposto
+**Data**: 2026-05-17
+
+### PROBLEMA
+- Sintoma: Pod único não absorve 500 req/min (máx 200/min)
+- Impacto: 25-30% requisições timeout em horário de pico
+- Escopo: kube-news application
+
+### SOLUÇÃO
+- Implementar HPA com: min 1, max 5 réplicas, target 70% CPU
+- Arquivo: k8s-bo/hpa.yml
+- Atualizar: resource requests em deployment
+
+### ALTERNATIVAS DESCARTADAS
+1. KEDA - overkill
+2. Aumentar replicas estáticas - não resolve picos
+3. VPA - requer restart
+
+### RISCOS
+- Thrashing: mitiga com stabilizationWindowSeconds=300
+- Inicialização lenta: mitiga com readinessProbe
+- Sinal: latência não melhora com 5 pods = rollback
+
+---
+
+## 🎯 Quando Usar
+
+✅ USE para:
+- Decisões que afetam múltiplos componentes
+- Que precisam aprovação antes de implementar
+- Que têm impacto financeiro/operacional
+- Que serão revisitadas no futuro
+
+❌ NÃO use para:
+- Bug fixes simples
+- Atualizações de dependência
+- Refactorings internos sem impacto
+
+---
+
+## 📚 Referências Relacionadas
+
+- SDD é Espectro (quando usar cada nível de especificação)
+- CLAUDE.md (arquitetura técnica do projeto)
+- POSTMORTEM.md (decisões aprendidas no primeiro dia)
+
+================================================================================
+INSTRUÇÕES PARA USAR NO CLAUDE.AI
+================================================================================
+
+1. Copie TUDO acima (de "NOME DO PROJETO" até aqui)
+
+2. Abra: https://claude.ai/projects/019e3626-4eda-73b1-9b4d-c73c6369ca7a
+
+3. Clique em "Editar" ou "Settings"
+
+4. Cole o conteúdo na seção "Description" ou "Knowledge"
+
+5. Sempre que criar um novo ADR, salve em docs/adr/adr-NNN-titulo.md
+
+6. Use como referência quando precisar documentar decisões futuras
+
+================================================================================
+FIM DO CONTEÚDO
+================================================================================

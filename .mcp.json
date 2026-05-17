@@ -7,7 +7,7 @@
                 "-i",
                 "--rm",
                 "-v",
-                "/home/fabricioveronez/.kube/config:/home/appuser/.kube/config:ro",
+                "C:\\Users\\Remakker\\.kube\\config:/home/appuser/.kube/config:ro",
                 "mcp/kubernetes"
             ]
         }
